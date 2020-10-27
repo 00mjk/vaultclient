@@ -75,7 +75,7 @@
 # include <windows.h>
 #endif
 
-UDCOMPILEASSERT(UDSDK_MAJOR_VERSION == 2 && UDSDK_MINOR_VERSION == 1, "This version of udSDK is not compatible");
+UDCOMPILEASSERT(UDSDK_MAJOR_VERSION == 2 && UDSDK_MINOR_VERSION == 0, "This version of udSDK is not compatible");
 
 #if UDPLATFORM_WINDOWS && !defined(NDEBUG)
 #  include <crtdbg.h>

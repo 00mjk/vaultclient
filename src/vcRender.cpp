@@ -784,29 +784,29 @@ udDouble3 vcRender_DepthToWorldPosition(vcState *pProgramState, vcRenderContext 
 
   double a = s_CameraFarPlane / (s_CameraFarPlane - s_CameraNearPlane);
   double b = s_CameraFarPlane * s_CameraNearPlane / (s_CameraNearPlane - s_CameraFarPlane);
-  double worldDepth = pow(2.0, logDepth * log2(s_CameraFarPlane + 1.0)) - 1.0;
+  double worldDepth = udPow(2.0, logDepth * udLog2(s_CameraFarPlane + 1.0)) - 1.0;
   double lDepth = a + b / worldDepth;
-  lDepth = (2.0 * s_CameraNearPlane) / (s_CameraFarPlane + s_CameraNearPlane - lDepth * (s_CameraFarPlane - s_CameraNearPlane));
+  float lDepth2 = (1.0 * s_CameraNearPlane) / (s_CameraFarPlane + s_CameraNearPlane - lDepth * (s_CameraFarPlane - s_CameraNearPlane));
 
-  udDouble3 r = (n + (f - n) * lDepth).toVector3();
+  udDouble3 r = (n + (f - n) * lDepth2).toVector3();
 
   udDouble3 dir = udNormalize3(f - n).toVector3();
-  udDouble3 p0 = pProgramState->pActiveViewport->camera.worldMouseRay.position;
-  udDouble3 d0 = pProgramState->pActiveViewport->camera.worldMouseRay.direction;
+  udDouble3 p0 = pProgramState->pActiveViewport->camera.worldMouseRay.position; // TODO: use these
+  udDouble3 d0 = pProgramState->pActiveViewport->camera.worldMouseRay.direction; // TODO: use these
 
   udDouble4 pickPosition4 = pProgramState->pActiveViewport->camera.matrices.inverseViewProjection * clipPos;
   udDouble3 pickPosition = pickPosition4.toVector3() / pickPosition4.w;
 
   //printf("%f: %f,%f,%f...%f: %f, %f, %f\n", clipDepth, pickPosition.x, pickPosition.y, pickPosition.z, depthIn, r.x, r.y, r.z);
- // printf("near2: %f, %f, %f. far: %f, %f, %f :: %f, %f, %f\n", n.x, n.y, n.z, f.x, f.y, f.z, dir.x, dir.y, dir.z);
+  //printf("near2: %f, %f, %f. far: %f, %f, %f :: %f, %f, %f\n", n.x, n.y, n.z, f.x, f.y, f.z, dir.x, dir.y, dir.z);
 
   udDouble3 diff = pickPosition - r;
-  printf("%f: %f, %f, %f\n", lDepth, diff.x, diff.y, diff.z);
+  printf("%f, %f, %f: %f, %f, %f\n", logDepth, lDepth, lDepth2, diff.x, diff.y, diff.z);
 
   udDouble3 r0 = (n + (f - n) * 0).toVector3();
   udDouble3 r1 = (n + (f - n) * 1.0).toVector3();
 
-  return pickPosition;
+  return r;
 
 }
 
